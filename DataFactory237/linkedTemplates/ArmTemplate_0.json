@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'CopyDataActivity1LS'"
 		},
+		"GetMetaDataLS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
+		},
 		"CopyDataActivity2LS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
@@ -28,6 +32,14 @@
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
 		},
 		"CopyDataActivity1LS_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "abhishekshukla2007@hotmail.com"
+		},
+		"GetMetaDataLS_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
+		},
+		"GetMetaDataLS_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "abhishekshukla2007@hotmail.com"
 		}
@@ -172,6 +184,31 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/CopyDataActivity2LS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetMetaDataLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Meta Data from local Files",
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('GetMetaDataLS_properties_typeProperties_host')]",
+					"userId": "[parameters('GetMetaDataLS_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('GetMetaDataLS_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IRDesktop",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
 			]
 		},
 		{
@@ -320,6 +357,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/GetMetaDataActivityDataSet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "GetMetaDataLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GetMetaDataLS')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -422,6 +484,50 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CopyDataActivity1Source')]",
 				"[concat(variables('factoryId'), '/datasets/CopyDataActivity1Sink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetMetaDataActivity')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Input as data set and output as meta data (input as a list of files stored on local system)",
+				"activities": [
+					{
+						"name": "Get Metadata1",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "GetMetaDataActivityDataSet",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "FileServerReadSettings",
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/GetMetaDataActivityDataSet')]"
 			]
 		}
 	]

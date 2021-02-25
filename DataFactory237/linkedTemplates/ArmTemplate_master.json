@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'CopyDataActivity2LS'"
 		},
+		"GetMetaDataLS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
+		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
@@ -30,6 +34,14 @@
 		"CopyDataActivity2LS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
+		},
+		"GetMetaDataLS_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
+		},
+		"GetMetaDataLS_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "abhishekshukla2007@hotmail.com"
 		},
 		"containerUri": {
 			"type": "string",
@@ -67,6 +79,9 @@
 					"CopyDataActivity1LS_password": {
 						"value": "[parameters('CopyDataActivity1LS_password')]"
 					},
+					"GetMetaDataLS_password": {
+						"value": "[parameters('GetMetaDataLS_password')]"
+					},
 					"CopyDataActivity2LS_properties_typeProperties_url": {
 						"value": "[parameters('CopyDataActivity2LS_properties_typeProperties_url')]"
 					},
@@ -75,6 +90,12 @@
 					},
 					"CopyDataActivity1LS_properties_typeProperties_userId": {
 						"value": "[parameters('CopyDataActivity1LS_properties_typeProperties_userId')]"
+					},
+					"GetMetaDataLS_properties_typeProperties_host": {
+						"value": "[parameters('GetMetaDataLS_properties_typeProperties_host')]"
+					},
+					"GetMetaDataLS_properties_typeProperties_userId": {
+						"value": "[parameters('GetMetaDataLS_properties_typeProperties_userId')]"
 					}
 				}
 			},
