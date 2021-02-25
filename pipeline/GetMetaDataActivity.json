@@ -43,7 +43,17 @@
 						]
 					}
 				],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childitems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@startswith(item().name,'e')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"annotations": []
