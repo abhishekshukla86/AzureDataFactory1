@@ -1,0 +1,16 @@
+{
+	"name": "CopyDataActivity1Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CopyDataActivity1SinkLS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "id"
+		}
+	}
+}
