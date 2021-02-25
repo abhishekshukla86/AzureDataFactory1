@@ -11,11 +11,17 @@
 		"CopyDataActivity1SinkLS_connectionString": {
 			"value": ""
 		},
+		"CopyDataActivity2LS_accountKey": {
+			"value": ""
+		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
 			"value": "\\\\DESKTOP-62S57K0\\id"
 		},
 		"CopyDataActivity1LS_properties_typeProperties_userId": {
 			"value": "abhishekshukla2007@hotmail.com"
+		},
+		"CopyDataActivity2LS_properties_typeProperties_url": {
+			"value": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"value": ""
