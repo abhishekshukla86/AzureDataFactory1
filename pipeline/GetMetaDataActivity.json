@@ -1,0 +1,7 @@
+{
+	"name": "GetMetaDataActivity",
+	"properties": {
+		"description": "Input as data set and output as meta data ",
+		"annotations": []
+	}
+}
