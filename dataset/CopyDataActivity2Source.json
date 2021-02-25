@@ -1,0 +1,36 @@
+{
+	"name": "CopyDataActivity2Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CopyDataActivity2LS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "info.csv",
+				"fileSystem": "copydatacontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "id",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "address",
+				"type": "String"
+			}
+		]
+	}
+}
