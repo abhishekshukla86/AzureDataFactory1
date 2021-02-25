@@ -1,0 +1,7 @@
+{
+	"name": "CopyDataActivity1",
+	"properties": {
+		"description": "Copying CSV file from local host to cloud azure sql db",
+		"annotations": []
+	}
+}
