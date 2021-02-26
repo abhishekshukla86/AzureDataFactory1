@@ -446,7 +446,14 @@
 					{
 						"name": "Get Metadata1",
 						"type": "GetMetadata",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "GetMetaDataWaitActivity",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -495,8 +502,53 @@
 								"type": "Expression"
 							}
 						}
+					},
+					{
+						"name": "IfCondition_GetMetaData",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "MetaDataFilter",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@empty(activity('MetaDataFilter').output)",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "IfCondition_appendVariable",
+									"type": "AppendVariable",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "IfCondition_variable",
+										"value": "'FalseCondition'"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "GetMetaDataWaitActivity",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 5
+						}
 					}
 				],
+				"variables": {
+					"IfCondition_variable": {
+						"type": "Array"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
