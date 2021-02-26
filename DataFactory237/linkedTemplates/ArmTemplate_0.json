@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
 		},
+		"LookUpLS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LookUpLS'"
+		},
 		"CopyDataActivity2LS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
@@ -48,6 +52,14 @@
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
 		},
 		"GetMetaDataLS_properties_typeProperties_userId": {
+			"type": "string",
+			"defaultValue": "abhishekshukla2007@hotmail.com"
+		},
+		"LookUpLS_properties_typeProperties_host": {
+			"type": "string",
+			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
+		},
+		"LookUpLS_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "abhishekshukla2007@hotmail.com"
 		}
@@ -277,6 +289,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/LookUpLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('LookUpLS_properties_typeProperties_host')]",
+					"userId": "[parameters('LookUpLS_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LookUpLS_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IRDesktop",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1Source')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -444,6 +480,42 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GetMetaDataLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LookupActivityDataSet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LookUpLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation",
+						"fileName": "customer-data.csv"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CID",
+						"type": "String"
+					},
+					{
+						"name": "Name",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LookUpLS')]"
 			]
 		},
 		{
@@ -743,6 +815,38 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "LookUpActivity1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "FileServerReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "LookupActivityDataSet",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
 					}
 				],
 				"variables": {
@@ -754,6 +858,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/GetMetaDataActivityDataSet')]",
+				"[concat(variables('factoryId'), '/datasets/LookupActivityDataSet')]",
 				"[concat(variables('factoryId'), '/datasets/DataLakeSink')]"
 			]
 		}
