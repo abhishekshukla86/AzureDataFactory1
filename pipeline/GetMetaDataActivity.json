@@ -54,6 +54,33 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "IfCondition_GetMetaData",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "MetaDataFilter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@empty(activity('MetaDataFilter').output)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "IfCondition_appendVariable",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": []
+						}
+					]
+				}
 			}
 		],
 		"annotations": []
