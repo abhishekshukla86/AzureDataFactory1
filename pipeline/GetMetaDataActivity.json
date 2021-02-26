@@ -77,7 +77,11 @@
 							"name": "IfCondition_appendVariable",
 							"type": "AppendVariable",
 							"dependsOn": [],
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "IfCondition_variable",
+								"value": "'FalseCondition'"
+							}
 						}
 					]
 				}
