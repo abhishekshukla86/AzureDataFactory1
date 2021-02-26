@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
 		},
+		"DataLakeSinkServiceGen2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'DataLakeSinkServiceGen2'"
+		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
@@ -42,6 +46,10 @@
 		"GetMetaDataLS_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "abhishekshukla2007@hotmail.com"
+		},
+		"DataLakeSinkServiceGen2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"type": "string",
@@ -76,6 +84,9 @@
 					"CopyDataActivity2LS_accountKey": {
 						"value": "[parameters('CopyDataActivity2LS_accountKey')]"
 					},
+					"DataLakeSinkServiceGen2_accountKey": {
+						"value": "[parameters('DataLakeSinkServiceGen2_accountKey')]"
+					},
 					"CopyDataActivity1LS_password": {
 						"value": "[parameters('CopyDataActivity1LS_password')]"
 					},
@@ -84,6 +95,9 @@
 					},
 					"CopyDataActivity2LS_properties_typeProperties_url": {
 						"value": "[parameters('CopyDataActivity2LS_properties_typeProperties_url')]"
+					},
+					"DataLakeSinkServiceGen2_properties_typeProperties_url": {
+						"value": "[parameters('DataLakeSinkServiceGen2_properties_typeProperties_url')]"
 					},
 					"CopyDataActivity1LS_properties_typeProperties_host": {
 						"value": "[parameters('CopyDataActivity1LS_properties_typeProperties_host')]"
