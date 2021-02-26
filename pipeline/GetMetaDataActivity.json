@@ -83,6 +83,12 @@
 				}
 			}
 		],
+		"variables": {
+			"IfCondition_variable": {
+				"type": "Array",
+				"defaultValue": "\"FalseCondition\""
+			}
+		},
 		"annotations": []
 	}
 }
