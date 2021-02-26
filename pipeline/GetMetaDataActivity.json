@@ -213,7 +213,8 @@
 					"dataset": {
 						"referenceName": "LookupActivityDataSet",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
