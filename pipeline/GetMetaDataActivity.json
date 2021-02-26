@@ -89,8 +89,7 @@
 		],
 		"variables": {
 			"IfCondition_variable": {
-				"type": "Array",
-				"defaultValue": "\"FalseCondition\""
+				"type": "Array"
 			}
 		},
 		"annotations": []
