@@ -39,6 +39,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"LSParameterziedDatabaseService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LSParameterziedDatabaseService'"
+		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
@@ -116,6 +120,9 @@
 					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"LSParameterziedDatabaseService_connectionString": {
+						"value": "[parameters('LSParameterziedDatabaseService_connectionString')]"
 					},
 					"CopyDataActivity1LS_password": {
 						"value": "[parameters('CopyDataActivity1LS_password')]"

@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"LSParameterziedDatabaseService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LSParameterziedDatabaseService'"
+		},
 		"CopyDataActivity1LS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'CopyDataActivity1LS'"
@@ -175,6 +179,25 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LSParameterziedDatabaseService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"DataBaseParam": {
+						"type": "String",
+						"defaultValue": "sqlserverdatanuttsdemo1.database.windows.net"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('LSParameterziedDatabaseService_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -642,43 +665,6 @@
 					},
 					{
 						"name": "Country",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CustomerDataSetfromStorage')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "customer-data.csv",
-						"fileSystem": "copydatacontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "CID",
-						"type": "String"
-					},
-					{
-						"name": "Name",
 						"type": "String"
 					}
 				]

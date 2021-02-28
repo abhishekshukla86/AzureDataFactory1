@@ -29,6 +29,9 @@
 		"AzureSqlDatabase1_connectionString": {
 			"value": ""
 		},
+		"LSParameterziedDatabaseService_connectionString": {
+			"value": ""
+		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
 			"value": "\\\\DESKTOP-62S57K0\\id"
 		},
