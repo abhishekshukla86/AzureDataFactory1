@@ -1,0 +1,12 @@
+{
+	"name": "ServerParamPipeline",
+	"properties": {
+		"parameters": {
+			"ServerNameParameter": {
+				"type": "string",
+				"defaultValue": "sqlserverdatanuttsdemo1.database.windows.net"
+			}
+		},
+		"annotations": []
+	}
+}
