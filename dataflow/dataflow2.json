@@ -1,0 +1,27 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "JoinDataSetfromDataLake",
+						"type": "DatasetReference"
+					},
+					"name": "JoinDataSourceSales"
+				},
+				{
+					"dataset": {
+						"referenceName": "CustomerDataSetfromStorage",
+						"type": "DatasetReference"
+					},
+					"name": "JoinDataSourceCustomer"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "source(output(\n\t\tInvoiceNo as integer,\n\t\tStockCode as string,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tInvoiceDate as date,\n\t\tUnitPrice as float,\n\t\tCustomerID as integer,\n\t\tCountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> JoinDataSourceSales\nsource(output(\n\t\tCID as integer,\n\t\tName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> JoinDataSourceCustomer"
+		}
+	}
+}
