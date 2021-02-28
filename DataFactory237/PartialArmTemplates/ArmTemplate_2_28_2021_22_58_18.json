@@ -1,0 +1,277 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DataFactory237"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText2",
+								"type": "DatasetReference"
+							},
+							"name": "LookupSourceCustomerData"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DATAFLowSinkDB",
+								"type": "DatasetReference"
+							},
+							"name": "DataFlowSinkTOSQLDB"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureStream2dataSet",
+								"type": "DatasetReference"
+							},
+							"name": "Stream2Sink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DataFlowtoSQLDBsalesDataDef",
+								"type": "DatasetReference"
+							},
+							"name": "StreamDef"
+						}
+					],
+					"transformations": [
+						{
+							"name": "ConditionalSplit1"
+						},
+						{
+							"name": "NewColumn"
+						},
+						{
+							"name": "Lookup1"
+						},
+						{
+							"name": "lookupFilter"
+						}
+					],
+					"script": "parameters{\n\tDefParam as string (\"other than sales data and stream2\")\n}\nsource(output(\n\t\tInvoiceNo as integer,\n\t\tStockCode as string,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tInvoiceDate as date,\n\t\tUnitPrice as float,\n\t\tCustomerID as integer,\n\t\tCountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tCID as integer,\n\t\tName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> LookupSourceCustomerData\nNewColumn split(UnitPrice>1 && UnitPrice<3,\n\tUnitPrice>3 && UnitPrice<4,\n\tUnitPrice>4,\n\tdisjoint: false) ~> ConditionalSplit1@(Stream1, Stream2, DefaultStream)\nlookupFilter derive(CustomerName = Name) ~> NewColumn\nsource1, LookupSourceCustomerData lookup(CustomerID == CID,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nLookup1 filter(Quantity<4) ~> lookupFilter\nConditionalSplit1@Stream1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DataFlowSinkTOSQLDB\nConditionalSplit1@Stream2 sink(input(\n\t\tInvoiceNo as integer,\n\t\tStockCode as string,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tInvoiceDate as date,\n\t\tUnitPrice as double,\n\t\tCustomerID as integer,\n\t\tCountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Stream2Sink\nConditionalSplit1@DefaultStream sink(input(\n\t\tInvoiceNo as integer,\n\t\tStockCode as string,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tInvoiceDate as date,\n\t\tUnitPrice as double,\n\t\tCustomerID as integer,\n\t\tCountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> StreamDef"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JoinPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "JoinData",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CustomerSalesData",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/CustomerSalesData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CustomerSalesData')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "JoinDataSetfromDataLake",
+								"type": "DatasetReference"
+							},
+							"name": "JoinDataSourceSales"
+						},
+						{
+							"dataset": {
+								"referenceName": "CustomerDataSetfromStorage",
+								"type": "DatasetReference"
+							},
+							"name": "JoinDataSourceCustomer"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "CusotmerSalesJoinDataSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JoinSalesandCustomerData"
+						}
+					],
+					"script": "source(output(\n\t\tInvoiceNo as integer,\n\t\tStockCode as string,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tInvoiceDate as date,\n\t\tUnitPrice as float,\n\t\tCustomerID as integer,\n\t\tCountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> JoinDataSourceSales\nsource(output(\n\t\tCID as integer,\n\t\tName as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> JoinDataSourceCustomer\nJoinDataSourceSales, JoinDataSourceCustomer join(CustomerID == CID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> JoinSalesandCustomerData\nJoinSalesandCustomerData sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> CusotmerSalesJoinDataSink"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/JoinDataSetfromDataLake')]",
+				"[concat(variables('factoryId'), '/datasets/CustomerDataSetfromStorage')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JoinDataSetfromDataLake')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "sales-data-part1.csv",
+						"fileSystem": "copydatacontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "InvoiceNo",
+						"type": "String"
+					},
+					{
+						"name": "StockCode",
+						"type": "String"
+					},
+					{
+						"name": "Description",
+						"type": "String"
+					},
+					{
+						"name": "Quantity",
+						"type": "String"
+					},
+					{
+						"name": "InvoiceDate",
+						"type": "String"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "Country",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CustomerDataSetfromStorage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "customer-data.csv",
+						"fileSystem": "copydatacontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CID",
+						"type": "String"
+					},
+					{
+						"name": "Name",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "customer_sales_data"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
