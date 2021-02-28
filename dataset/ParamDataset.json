@@ -11,11 +11,6 @@
 				}
 			}
 		},
-		"parameters": {
-			"LSparamDataSet": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": []
