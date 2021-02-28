@@ -19,17 +19,25 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'CopyDataActivity2LS'"
 		},
-		"GetMetaDataLS_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
-		},
 		"DataLakeSinkServiceGen2_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'DataLakeSinkServiceGen2'"
 		},
+		"GetMetaDataLS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
+		},
 		"LookUpLS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LookUpLS'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
 			"type": "string",
@@ -43,6 +51,10 @@
 			"type": "string",
 			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		},
+		"DataLakeSinkServiceGen2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
+		},
 		"GetMetaDataLS_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
@@ -51,10 +63,6 @@
 			"type": "string",
 			"defaultValue": "abhishekshukla2007@hotmail.com"
 		},
-		"DataLakeSinkServiceGen2_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
-		},
 		"LookUpLS_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
@@ -62,6 +70,10 @@
 		"LookUpLS_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "abhishekshukla2007@hotmail.com"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		},
 		"containerUri": {
 			"type": "string",
@@ -99,6 +111,12 @@
 					"DataLakeSinkServiceGen2_accountKey": {
 						"value": "[parameters('DataLakeSinkServiceGen2_accountKey')]"
 					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
 					"CopyDataActivity1LS_password": {
 						"value": "[parameters('CopyDataActivity1LS_password')]"
 					},
@@ -113,6 +131,9 @@
 					},
 					"DataLakeSinkServiceGen2_properties_typeProperties_url": {
 						"value": "[parameters('DataLakeSinkServiceGen2_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
 					},
 					"CopyDataActivity1LS_properties_typeProperties_host": {
 						"value": "[parameters('CopyDataActivity1LS_properties_typeProperties_host')]"
@@ -135,6 +156,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "DataFactory237_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory237_ArmTemplate_0')]"
+			]
 		}
 	]
 }

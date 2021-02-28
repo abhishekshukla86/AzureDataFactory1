@@ -19,17 +19,25 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'CopyDataActivity2LS'"
 		},
-		"GetMetaDataLS_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
-		},
 		"DataLakeSinkServiceGen2_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'DataLakeSinkServiceGen2'"
 		},
+		"GetMetaDataLS_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'GetMetaDataLS'"
+		},
 		"LookUpLS_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'LookUpLS'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
 			"type": "string",
@@ -43,6 +51,10 @@
 			"type": "string",
 			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		},
+		"DataLakeSinkServiceGen2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
+		},
 		"GetMetaDataLS_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
@@ -51,10 +63,6 @@
 			"type": "string",
 			"defaultValue": "abhishekshukla2007@hotmail.com"
 		},
-		"DataLakeSinkServiceGen2_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
-		},
 		"LookUpLS_properties_typeProperties_host": {
 			"type": "string",
 			"defaultValue": "\\\\DESKTOP-62S57K0\\id"
@@ -62,32 +70,16 @@
 		"LookUpLS_properties_typeProperties_userId": {
 			"type": "string",
 			"defaultValue": "abhishekshukla2007@hotmail.com"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/IR1')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/IRDesktop')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -191,105 +183,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CopyDataActivity1Source')]",
 				"[concat(variables('factoryId'), '/datasets/CopyDataActivity1Sink')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1LS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "FileServer",
-				"typeProperties": {
-					"host": "[parameters('CopyDataActivity1LS_properties_typeProperties_host')]",
-					"userId": "[parameters('CopyDataActivity1LS_properties_typeProperties_userId')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('CopyDataActivity1LS_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "IRDesktop",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1Source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CopyDataActivity1LS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "FileServerLocation",
-						"fileName": "info.csv"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "id",
-						"type": "String"
-					},
-					{
-						"name": "name",
-						"type": "String"
-					},
-					{
-						"name": "address",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CopyDataActivity1LS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1SinkLS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Linked service to Azure SQL DB",
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('CopyDataActivity1SinkLS_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1Sink')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CopyDataActivity1SinkLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "id"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CopyDataActivity1SinkLS')]"
 			]
 		},
 		{
@@ -398,65 +291,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CopyDataActivity2LS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Linked Service for azure storage gen 2 ",
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('CopyDataActivity2LS_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('CopyDataActivity2LS_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CopyDataActivity2Source')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CopyDataActivity2LS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "info.csv",
-						"fileSystem": "copydatacontainer"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "id",
-						"type": "String"
-					},
-					{
-						"name": "name",
-						"type": "String"
-					},
-					{
-						"name": "address",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CopyDataActivity2LS')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/GetMetaDataActivity')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -493,6 +327,7 @@
 							],
 							"storeSettings": {
 								"type": "FileServerReadSettings",
+								"recursive": true,
 								"enablePartitionDiscovery": false
 							},
 							"formatSettings": {
@@ -696,71 +531,106 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/GetMetaDataLS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Meta Data from local Files",
-				"annotations": [],
-				"type": "FileServer",
-				"typeProperties": {
-					"host": "[parameters('GetMetaDataLS_properties_typeProperties_host')]",
-					"userId": "[parameters('GetMetaDataLS_properties_typeProperties_userId')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('GetMetaDataLS_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "IRDesktop",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GetMetaDataActivityDataSet')]",
+			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1Sink')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "GetMetaDataLS",
+					"referenceName": "CopyDataActivity1SinkLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "id"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CopyDataActivity1SinkLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1Source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CopyDataActivity1LS",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
-						"type": "FileServerLocation"
+						"type": "FileServerLocation",
+						"fileName": "info.csv"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "id",
+						"type": "String"
+					},
+					{
+						"name": "name",
+						"type": "String"
+					},
+					{
+						"name": "address",
+						"type": "String"
+					}
+				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/GetMetaDataLS')]"
+				"[concat(variables('factoryId'), '/linkedServices/CopyDataActivity1LS')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DataLakeSinkServiceGen2')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/CopyDataActivity2Source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CopyDataActivity2LS",
+					"type": "LinkedServiceReference"
+				},
 				"annotations": [],
-				"type": "AzureBlobFS",
+				"type": "DelimitedText",
 				"typeProperties": {
-					"url": "[parameters('DataLakeSinkServiceGen2_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('DataLakeSinkServiceGen2_accountKey')]"
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "info.csv",
+						"fileSystem": "copydatacontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "String"
+					},
+					{
+						"name": "name",
+						"type": "String"
+					},
+					{
+						"name": "address",
+						"type": "String"
 					}
-				}
+				]
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CopyDataActivity2LS')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DataLakeSink')]",
@@ -803,27 +673,28 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/LookUpLS')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/GetMetaDataActivityDataSet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"type": "FileServer",
-				"typeProperties": {
-					"host": "[parameters('LookUpLS_properties_typeProperties_host')]",
-					"userId": "[parameters('LookUpLS_properties_typeProperties_userId')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('LookUpLS_password')]"
-					}
+				"linkedServiceName": {
+					"referenceName": "GetMetaDataLS",
+					"type": "LinkedServiceReference"
 				},
-				"connectVia": {
-					"referenceName": "IRDesktop",
-					"type": "IntegrationRuntimeReference"
-				}
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "FileServerLocation"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
+				"[concat(variables('factoryId'), '/linkedServices/GetMetaDataLS')]"
 			]
 		},
 		{
@@ -860,6 +731,337 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LookUpLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1LS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('CopyDataActivity1LS_properties_typeProperties_host')]",
+					"userId": "[parameters('CopyDataActivity1LS_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('CopyDataActivity1LS_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IRDesktop",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyDataActivity1SinkLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked service to Azure SQL DB",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('CopyDataActivity1SinkLS_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CopyDataActivity2LS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Linked Service for azure storage gen 2 ",
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('CopyDataActivity2LS_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('CopyDataActivity2LS_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataLakeSinkServiceGen2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('DataLakeSinkServiceGen2_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('DataLakeSinkServiceGen2_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetMetaDataLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Meta Data from local Files",
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('GetMetaDataLS_properties_typeProperties_host')]",
+					"userId": "[parameters('GetMetaDataLS_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('GetMetaDataLS_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IRDesktop",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LookUpLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "FileServer",
+				"typeProperties": {
+					"host": "[parameters('LookUpLS_properties_typeProperties_host')]",
+					"userId": "[parameters('LookUpLS_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LookUpLS_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "IRDesktop",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/IRDesktop')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IR1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IRDesktop')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataFlowPipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DataFlowSource",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"DataFlowSinkTOSQLDB": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DATAFLowSinkDB",
+								"type": "DatasetReference"
+							},
+							"name": "DataFlowSinkTOSQLDB"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tInvoiceNo as integer,\n\t\tStockCode as string,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tInvoiceDate as date,\n\t\tUnitPrice as float,\n\t\tCustomerID as integer,\n\t\tCountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> DataFlowSinkTOSQLDB"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/datasets/DATAFLowSinkDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "sales-data-part1.csv",
+						"fileSystem": "copydatacontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "InvoiceNo",
+						"type": "String"
+					},
+					{
+						"name": "StockCode",
+						"type": "String"
+					},
+					{
+						"name": "Description",
+						"type": "String"
+					},
+					{
+						"name": "Quantity",
+						"type": "String"
+					},
+					{
+						"name": "InvoiceDate",
+						"type": "String"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "Country",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DATAFLowSinkDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "sales_data"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
 		}
 	]

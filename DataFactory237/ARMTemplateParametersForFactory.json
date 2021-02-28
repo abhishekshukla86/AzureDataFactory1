@@ -14,13 +14,19 @@
 		"CopyDataActivity2LS_accountKey": {
 			"value": ""
 		},
-		"GetMetaDataLS_password": {
-			"value": ""
-		},
 		"DataLakeSinkServiceGen2_accountKey": {
 			"value": ""
 		},
+		"GetMetaDataLS_password": {
+			"value": ""
+		},
 		"LookUpLS_password": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
 			"value": ""
 		},
 		"CopyDataActivity1LS_properties_typeProperties_host": {
@@ -32,20 +38,23 @@
 		"CopyDataActivity2LS_properties_typeProperties_url": {
 			"value": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		},
+		"DataLakeSinkServiceGen2_properties_typeProperties_url": {
+			"value": "https://adfstoragedatanutts1.dfs.core.windows.net"
+		},
 		"GetMetaDataLS_properties_typeProperties_host": {
 			"value": "\\\\DESKTOP-62S57K0\\id"
 		},
 		"GetMetaDataLS_properties_typeProperties_userId": {
 			"value": "abhishekshukla2007@hotmail.com"
 		},
-		"DataLakeSinkServiceGen2_properties_typeProperties_url": {
-			"value": "https://adfstoragedatanutts1.dfs.core.windows.net"
-		},
 		"LookUpLS_properties_typeProperties_host": {
 			"value": "\\\\DESKTOP-62S57K0\\id"
 		},
 		"LookUpLS_properties_typeProperties_userId": {
 			"value": "abhishekshukla2007@hotmail.com"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://adfstoragedatanutts1.dfs.core.windows.net"
 		}
 	}
 }
